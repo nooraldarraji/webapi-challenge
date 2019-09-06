@@ -1,6 +1,19 @@
 const express = require("express")
 const Project = require("../data/helpers/projectModel")
+const actionRoute = require("./actionRoute")
 const router = express.Router()
+
+router.get("/:id/actions", validateProjectId, (req, res) => {
+    Project.getProjectActions(req.params.id)
+        .then(results => res.status(200).json(results))
+        .catch(() =>
+            res
+                .status(500)
+                .json({ errorMessage: "Error with getting all actions for a project" })
+        );
+});
+
+router.use("/:id/actions", validateProjectId, actionRoute);
 
 router.get("/", (req, res) => {
     Project.get()
