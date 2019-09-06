@@ -46,6 +46,26 @@ router.post("/", validateProjectResource, (req, res) => {
         )
 })
 
+router.delete("/:id", validateProjectId, (req, res) => {
+    Project.remove(req.params.id)
+        .then(results => res.status(200).json({ recordsDeleted: results }))
+        .catch(() =>
+            res
+                .status(500)
+                .json({ errorMessage: "Error in removing specific project" })
+        );
+});
+
+router.put("/:id", validateProjectId, validateProjectResource, (req, res) => {
+    Project.update(req.params.id, req.body)
+        .then(results => res.status(202).json({ projectUpdated: results }))
+        .catch(() =>
+            res
+                .status(500)
+                .json({ errorMessage: "Error updating the specific Project" })
+        );
+});
+
 function validateProjectResource(req, res, next) {
     if (req.body.name === undefined) {
         res.status(400).json({
